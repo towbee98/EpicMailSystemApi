@@ -7,7 +7,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 //console.log(process.env.MONGO_URI)
 const config = {
-    MONGO_URI: process.env.MONGO_URI_LOCAL,
+    MONGO_URI: process.env.MONGO_URI,
     PORT: process.env.PORT,
     JWT_SECRET: process.env.JWT_SECRET,
     EMAIL: process.env.EMAIL,
