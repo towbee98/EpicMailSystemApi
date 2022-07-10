@@ -1,0 +1,19 @@
+extends baseEmail
+
+block content 
+    h2= subject
+    p Hello #{name},
+    p Welcome to Epic Mail , we are glad to have you . 
+    p Send Messages with ease.
+    table.btn.btn-primary(role='presentation' border='0' cellpadding='0' cellspacing='0' style='box-sizing: border-box;')
+        tbody
+            tr
+                td(align='left' style='padding-bottom: 15px;')
+                    table(role='presentation' border='0' cellpadding='0' cellspacing='0')
+                        tbody
+                            tr
+                                td
+                                    a(href=`${url}` target='_blank') Click here to activate your account
+    p Epic Mail is an online messaging platform that enables to you send message without stress.
+    p If you need help in anyway, don't hesitate to get in touch.  
+    p Good luck! Hope it works.
