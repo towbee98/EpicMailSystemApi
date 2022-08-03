@@ -11,7 +11,8 @@ next) => {
     let customError = err;
     if (!(err instanceof ErrorClass_1.CreateError)) {
         console.log(err.name);
-        if (env_1.default.NODE_ENV === 'production') {
+        console.log(env_1.default.NODE_ENV);
+        if (env_1.default.NODE_ENV == 'production') {
             customError =
                 err.code === 11000
                     ? new ErrorClass_1.CreateError('Error, Entity already exist', 400)

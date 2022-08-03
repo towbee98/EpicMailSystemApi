@@ -13,7 +13,8 @@ const errorHandler: ErrorRequestHandler = (
 
   if (!(err instanceof CreateError)) {
     console.log(err.name);
-    if (config.NODE_ENV === 'production') {
+    console.log(config.NODE_ENV);
+    if (config.NODE_ENV == 'production') {
       customError =
         err.code === 11000
           ? new CreateError('Error, Entity already exist', 400)
@@ -26,19 +27,20 @@ const errorHandler: ErrorRequestHandler = (
           : err.name === 'JsonWebTokenError'
           ? new CreateError('Bad Token, Please login again', 401)
           : new CreateError('Internal Server error', 500);
+    } else {
+      customError =
+        err.code === 11000
+          ? new CreateError(err.message, 400)
+          : err.name === 'CastError'
+          ? new CreateError(err.message, 400)
+          : err.name === 'ValidationError'
+          ? new CreateError(err.message, 400)
+          : err.name === 'TokenExpiredError'
+          ? new CreateError(err.message, 401)
+          : err.name === 'JsonWebTokenError'
+          ? new CreateError(err.message, 401)
+          : new CreateError('Internal Server error', 500);
     }
-    customError =
-      err.code === 11000
-        ? new CreateError(err.message, 400)
-        : err.name === 'CastError'
-        ? new CreateError(err.message, 400)
-        : err.name === 'ValidationError'
-        ? new CreateError(err.message, 400)
-        : err.name === 'TokenExpiredError'
-        ? new CreateError(err.message, 401)
-        : err.name === 'JsonWebTokenError'
-        ? new CreateError(err.message, 401)
-        : new CreateError('Internal Server error', 500);
   }
 
   return res
