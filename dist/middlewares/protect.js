@@ -8,12 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthCheck = void 0;
-const ErrorClass_1 = __importDefault(require("../utils/ErrorClass"));
+const ErrorClass_1 = require("../utils/ErrorClass");
 const token_1 = require("../utils/token");
 const user_1 = require("../repository/user");
 function PasswordIssuedAfterToken(jwtTimeStamp, passwordChangedAt) {
@@ -27,20 +24,20 @@ const AuthCheck = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         let validToken = false;
         const token = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.replace('Bearer', '').trim();
         if (!token)
-            return next(new ErrorClass_1.default('You are not logged in, Please login', 403));
+            return next(new ErrorClass_1.CreateError('You are not logged in, Please login', 403));
         const decoded = yield (0, token_1.VerifyToken)(token);
         const validUser = yield (0, user_1.FindUser)({
             username: decoded.username,
         });
         if (!validUser)
-            return next(new ErrorClass_1.default('User not found,Login again', 400));
+            return next(new ErrorClass_1.CreateError('User not found,Login again', 400));
         if (validUser.status != 'Active')
-            return next(new ErrorClass_1.default('Your account is not active,Please verify your email', 400));
+            return next(new ErrorClass_1.CreateError('Your account is not active,Please verify your email', 400));
         if (validUser.passwordChangedAt) {
             validToken = PasswordIssuedAfterToken(decoded.iat, validUser.passwordChangedAt);
         }
         if (validToken)
-            return next(new ErrorClass_1.default('Password has changed , Login again', 403));
+            return next(new ErrorClass_1.CreateError('Password has changed , Login again', 403));
         req.user = validUser;
         next();
     }

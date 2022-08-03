@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import CreateError from '../utils/ErrorClass';
+import { CreateError } from '../utils/ErrorClass';
 import {
   validateCreateUserSchema,
   validateEmail,

@@ -1,25 +1,25 @@
 import { RequestHandler, Request } from 'express';
-import { LoginUser, ChangePassword } from '../repository/user';
+import { LoginUser, ChangePassword, findAllUsers } from '../repository/user';
 import { compareFields } from '../utils/password';
 import { validatePassword } from '../utils/validators';
-import CreateError from '../utils/ErrorClass';
+import { CreateError } from '../utils/ErrorClass';
 
 interface CustomRequest extends Request {
   // eslint-disable-next-line @typescript-eslint/ban-types
   user: string | Object;
 }
-
-export const HomePage: RequestHandler = (req, res, next) => {
+export const getAllUsers: RequestHandler = async (req, res, next) => {
   try {
+    const users = await findAllUsers({});
     res.status(200).json({
-      status: 'success',
-      message: 'This is the home page',
-    });
+      status:'success',
+      message:'Users retrieved successfully',
+      users
+    })
   } catch (error) {
     next(error);
   }
 };
-
 export const UpdatePassword: RequestHandler = async (req, res, next) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

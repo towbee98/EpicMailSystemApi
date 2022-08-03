@@ -1,10 +1,19 @@
-class CreateError extends Error {
+interface AppErrorArgs {
+  name?: string;
   status: number;
+  message: string;
+  code?: number;
+  stack?: string;
+}
+
+class CreateError {
+  status: number;
+  message: string;
   constructor(message: string, statusCode: number) {
-    super(message);
+    this.message = message;
     this.status = statusCode;
     Error.captureStackTrace(this, this.constructor);
   }
 }
 
-export default CreateError;
+export { CreateError, AppErrorArgs };

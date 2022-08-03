@@ -68,7 +68,6 @@ describe('Authentication', () => {
                 .send(details)
                 .expect(201)
                 .end(function (err, res) {
-                // console.log(err)
                 if (err)
                     return done(err);
                 return done();

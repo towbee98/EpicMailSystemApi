@@ -49,7 +49,7 @@ export default {
           password: {
             type: 'string',
             dewscription: 'password of an exsiting user',
-            example: 'towbee98?',
+            example: 'towbee98?'
           },
         },
       },
@@ -97,6 +97,30 @@ export default {
           },
         },
       },
+      // Message Payload
+      sendMessage: {
+        type: 'object',
+        properties: {
+          title: {
+            type: 'string',
+            description: 'The title of the message ',
+            example: 'Application for O.T Job Vacancy',
+          },
+          content: {
+            type: 'string',
+            description: 'The content of the message',
+            example:
+              'I am applying to the job vacancy of your company posted on twitter. I am a qualified candidate and i see myself as the new employee of your country',
+          },
+          to: {
+            type: 'string',
+            description:
+              'This is the username of the recipient.The recipient must be an existing user of the platform',
+            example: 'oladtobi97',
+          },
+        },
+        required: ['to'],
+      },
       Error: {
         type: 'object', // data type
         properties: {
@@ -109,7 +133,7 @@ export default {
           internal_code: {
             type: 'string', // data type
             description: 'Error internal code', // desc
-            example: 'Invalid parameters', // example of an error internal code
+            example: 'Invalid parameters',
           },
         },
       },

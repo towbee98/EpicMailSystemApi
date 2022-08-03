@@ -6,9 +6,9 @@ exports.default = {
             BearerAuth: [],
         },
         tags: ['Messaging'],
-        summary: 'This can only be accessed if a user is logged in .A JWT is sent along with the request.It returns a welcome message for an authorized user and a request to login message for an unauthorized user',
-        description: 'This is the welcome page for an authorized user',
-        operationId: 'messageInbox',
+        summary: 'This can only be accessed if a user is logged in .A JWT is sent along with the request.This route enables a user to fetch all inbox messages sent from any existing user on the platform',
+        description: 'This is the route for fetching all inbox messages from another user ',
+        operationId: 'recieveMessages',
         parameters: [],
         responses: {
             200: {

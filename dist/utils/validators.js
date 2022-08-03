@@ -1,12 +1,11 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateResetPwPayload = exports.validateEmail = exports.validatePassword = exports.validateLoginUser = exports.validateCreateUserSchema = void 0;
-const ErrorClass_1 = __importDefault(require("./ErrorClass"));
+const ErrorClass_1 = require("./ErrorClass");
 const validateCreateUserSchema = ({ name, username, password, email, }) => {
     const Errors = [];
+    if (!name || !username || !password || !email)
+        Errors.push('A field is missing, Required fields are name,username,password and email');
     if (name.length > 20 || name.length < 2)
         Errors.push('name must be at least 2 characters and at most 20 characters.');
     if (!/[a-zA-Z]+/g.test(name))
@@ -30,31 +29,31 @@ const validateCreateUserSchema = ({ name, username, password, email, }) => {
 exports.validateCreateUserSchema = validateCreateUserSchema;
 const validateLoginUser = ({ username, password }) => {
     if (!/^[a-zA-Z]+\d+$/g.test(username))
-        throw new ErrorClass_1.default('${username} can only contain alphabets and digit at the end', 400);
+        throw new ErrorClass_1.CreateError('${username} can only contain alphabets and digit at the end', 400);
     if (username.length < 7)
-        throw new ErrorClass_1.default('${username} must be at least 7 characters', 400);
+        throw new ErrorClass_1.CreateError('${username} must be at least 7 characters', 400);
     if (username.length > 15)
-        throw new ErrorClass_1.default('${username}cannot be longer than 15 characters', 400);
+        throw new ErrorClass_1.CreateError('${username}cannot be longer than 15 characters', 400);
     if (password.length < 7)
-        throw new ErrorClass_1.default('password is too short.It must have at least 7 characters', 400);
+        throw new ErrorClass_1.CreateError('password is too short.It must have at least 7 characters', 400);
     if (password.length > 15)
-        throw new ErrorClass_1.default('Password too long , Password cannot exceed 15 characters', 400);
+        throw new ErrorClass_1.CreateError('Password too long , Password cannot exceed 15 characters', 400);
     if (!/^[a-zA-Z]+\d+[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]$/g.test(password))
-        throw new ErrorClass_1.default('password must contain at least a digit  and a single special character at the end of it', 400);
+        throw new ErrorClass_1.CreateError('password must contain at least a digit  and a single special character at the end of it', 400);
     if (typeof password != 'string')
-        throw new ErrorClass_1.default('${password} must be a string', 400);
+        throw new ErrorClass_1.CreateError('${password} must be a string', 400);
     return { username, password };
 };
 exports.validateLoginUser = validateLoginUser;
 const validatePassword = (password) => {
     if (password.length < 7)
-        throw new ErrorClass_1.default('New password is too short.It must have at least 7 characters', 400);
+        throw new ErrorClass_1.CreateError('New password is too short.It must have at least 7 characters', 400);
     if (password.length > 15)
-        throw new ErrorClass_1.default('New Password too long , Password cannot exceed 15 characters', 400);
+        throw new ErrorClass_1.CreateError('New Password too long , Password cannot exceed 15 characters', 400);
     if (!/^[a-zA-Z]+\d+[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]$/g.test(password))
-        throw new ErrorClass_1.default('New password must contain at least a digit  and a single special character at the end of it', 400);
+        throw new ErrorClass_1.CreateError('New password must contain at least a digit  and a single special character at the end of it', 400);
     if (typeof password != 'string')
-        throw new ErrorClass_1.default('${password} must be a string', 400);
+        throw new ErrorClass_1.CreateError('${password} must be a string', 400);
     return password;
 };
 exports.validatePassword = validatePassword;

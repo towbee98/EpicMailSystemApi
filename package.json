@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --timeout 15000 -c dist/controllers/test.authController.js -R nyan",
     "start": "node dist/index.js",
-    "dev": "nodemon dist/index.js",
+    "dev": " nodemon dist/index.js ",
     "lint": "eslint src/**/*.{js,ts,json}",
     "lint:fix": "eslint --fix 'src/**/*.{ts,json}'",
     "format": "prettier --write src/**/*.ts --config ./.prettierrc"

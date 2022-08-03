@@ -12,17 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChangePassword = exports.FindAUser = exports.FindUser = exports.LoginUser = exports.CreateUser = void 0;
+exports.findAllUsers = exports.ChangePassword = exports.FindAUser = exports.FindUser = exports.LoginUser = exports.CreateUser = void 0;
 const user_1 = __importDefault(require("../models/user"));
 const password_1 = require("../utils/password");
 const CreateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    data.password = yield (0, password_1.generatePasswordHash)(data.password);
-    const newUser = yield user_1.default.create(data);
-    return newUser;
+    // eslint-disable-next-line no-useless-catch
+    try {
+        data.password = yield (0, password_1.generatePasswordHash)(data.password);
+        const newUser = yield user_1.default.create(data);
+        return newUser;
+    }
+    catch (error) {
+        throw error;
+    }
 });
 exports.CreateUser = CreateUser;
 const LoginUser = (username) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_1.default.findOne({ username }).select('+password');
+    const user = yield user_1.default.findOne({
+        username: new RegExp(username, 'i'),
+    }).select('+password');
     return user;
 });
 exports.LoginUser = LoginUser;
@@ -53,3 +61,7 @@ const ChangePassword = (user, password) => __awaiter(void 0, void 0, void 0, fun
     return user.toJSON();
 });
 exports.ChangePassword = ChangePassword;
+const findAllUsers = (filter = {}) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield user_1.default.find(filter);
+});
+exports.findAllUsers = findAllUsers;

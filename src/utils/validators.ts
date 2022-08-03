@@ -1,4 +1,4 @@
-import CreateError from './ErrorClass';
+import { CreateError } from './ErrorClass';
 type createUser = {
   name: string;
   username: string;
@@ -18,6 +18,10 @@ export const validateCreateUserSchema = ({
   email,
 }: createUser) => {
   const Errors: string[] = [];
+  if (!name || !username || !password || !email)
+    Errors.push(
+      'A field is missing, Required fields are name,username,password and email',
+    );
   if (name.length > 20 || name.length < 2)
     Errors.push(
       'name must be at least 2 characters and at most 20 characters.',

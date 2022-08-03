@@ -9,6 +9,7 @@ const config = {
     MONGO_URI: process.env.MONGO_URI,
     PORT: process.env.PORT,
     JWT_SECRET: process.env.JWT_SECRET,
+    NODE_ENV: process.env.NODE_ENV,
     EMAIL: process.env.EMAIL,
     REFRESH_TOKEN: process.env.REFRESH_TOKEN,
     CLIENT_SECRET: process.env.CLIENT_SECRET,

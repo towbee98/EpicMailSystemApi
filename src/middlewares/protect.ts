@@ -1,5 +1,5 @@
 import { RequestHandler, Request } from 'express';
-import CreateError from '../utils/ErrorClass';
+import { CreateError } from '../utils/ErrorClass';
 import { VerifyToken } from '../utils/token';
 import { Document, ObjectId } from 'mongoose';
 import { FindUser } from '../repository/user';

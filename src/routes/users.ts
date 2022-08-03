@@ -1,7 +1,10 @@
 import express from 'express';
 const userRouter = express.Router();
-import { UpdatePassword } from '../controllers/userController';
+import { UpdatePassword, getAllUsers } from '../controllers/userController';
+import { AuthCheck } from '../middlewares/protect';
 
-userRouter.post('/updatePassword', UpdatePassword);
+userRouter.use(AuthCheck);
+userRouter.route('/updatePassword').post(UpdatePassword);
+userRouter.route('/').get(getAllUsers);
 
 export default userRouter;

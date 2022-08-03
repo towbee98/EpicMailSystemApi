@@ -16,18 +16,18 @@ exports.resetPassword = exports.forgetPassword = exports.verifyUser = exports.Si
 const user_1 = require("../repository/user");
 const validators_1 = require("../utils/validators");
 const password_1 = require("../utils/password");
-const ErrorClass_1 = __importDefault(require("../utils/ErrorClass"));
+const ErrorClass_1 = require("../utils/ErrorClass");
 const token_1 = require("../utils/token");
-const Email_1 = require("../utils/Email");
+const events_1 = __importDefault(require("../utils/events"));
 const LoginController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
         const validatedData = (0, validators_1.validateLoginUser)(data);
         const user = yield (0, user_1.LoginUser)(validatedData.username);
         if (!user)
-            return next(new ErrorClass_1.default('User does not exists', 404));
+            return next(new ErrorClass_1.CreateError('User does not exists', 404));
         if (!(yield (0, password_1.compareFields)(validatedData.password, user.password)))
-            return next(new ErrorClass_1.default('The password and email are not compatible', 400));
+            return next(new ErrorClass_1.CreateError('The password and email are not compatible', 400));
         const token = yield (0, token_1.generateToken)({
             _id: user._id,
             username: user.username,
@@ -51,12 +51,13 @@ const SignUpController = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const newUser = yield (0, user_1.CreateUser)(Object.assign(Object.assign({}, data), { confirmCode, status: 'Pending' }));
         const url = `${req.protocol}://${req.get('host')}/api/v1/auth/${confirmCode}`;
-        yield new Email_1.Welcome(newUser, url).sendConfirmMail();
         res.status(201).json({
             status: 'success',
             newUser: newUser,
             message: 'Sign up  successful.Check your email to verify your account',
         });
+        if (newUser)
+            new events_1.default(newUser, url).welcome();
     }
     catch (error) {
         next(error);
@@ -67,10 +68,10 @@ const verifyUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     try {
         const confirmToken = req.params.confirmCode;
         if (!confirmToken)
-            return next(new ErrorClass_1.default('Confirmation Code not found', 422));
+            return next(new ErrorClass_1.CreateError('Confirmation Code not found', 422));
         const user = yield (0, user_1.FindUser)({ confirmCode: confirmToken });
         if (!user)
-            return next(new ErrorClass_1.default('User not found or invalid confirmation code', 400));
+            return next(new ErrorClass_1.CreateError('User not found or invalid confirmation code', 400));
         user.status = 'Active';
         user.save();
         res.status(200).json({
@@ -89,12 +90,13 @@ const forgetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         const email = req.body.email;
         const user = yield (0, user_1.FindUser)({ email });
         if (!user)
-            return next(new ErrorClass_1.default('Email not found', 404));
+            return next(new ErrorClass_1.CreateError('Email not found', 404));
         const TokensObject = yield (0, password_1.generatePasswordResetToken)();
         console.log(TokensObject.hashedResetToken);
         console.log((0, password_1.generateResetTokenHash)(TokensObject.resetToken));
         const url = `${req.protocol}://${req.get('host')}/api/v1/auth/resetPassword/${user._id}/${TokensObject.resetToken}`;
-        yield new Email_1.ForgetPassword(user, url).sendResetTokenMail();
+        if (TokensObject)
+            yield new events_1.default(user, url).forgetPassword();
         user.passwordResetToken = TokensObject.hashedResetToken;
         user.passwordResetExpires = new Date(Date.now() + 20 * 60 * 1000);
         yield user.save();
@@ -104,7 +106,6 @@ const forgetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         });
     }
     catch (error) {
-        console.log(error);
         next(error);
     }
 });
@@ -119,10 +120,8 @@ const resetPassword = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             passwordResetToken: (0, password_1.generateResetTokenHash)(resetToken),
             passwordResetExpires: { $gt: new Date(Date.now()) },
         });
-        // console.log(user);
-        // console.log(generateResetTokenHash(resetToken));
         if (!user)
-            return next(new ErrorClass_1.default('User not found or Token has expired.', 400));
+            return next(new ErrorClass_1.CreateError('User not found or Token has expired.', 400));
         user.password = yield (0, password_1.generatePasswordHash)(newPassword);
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;

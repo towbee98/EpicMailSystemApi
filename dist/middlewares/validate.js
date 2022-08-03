@@ -8,18 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateResetPasswordPayload = exports.validateForgetPasswordPayload = exports.validatePayload = void 0;
-const ErrorClass_1 = __importDefault(require("../utils/ErrorClass"));
+const ErrorClass_1 = require("../utils/ErrorClass");
 const validators_1 = require("../utils/validators");
 const validatePayload = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let errors = [];
     errors = (0, validators_1.validateCreateUserSchema)(req.body);
     if (errors.length != 0)
-        next(new ErrorClass_1.default(`${errors}`, 400));
+        next(new ErrorClass_1.CreateError(`${errors}`, 400));
     next();
 });
 exports.validatePayload = validatePayload;
@@ -27,13 +24,13 @@ const validateForgetPasswordPayload = (req, res, next) => __awaiter(void 0, void
     let errors = [];
     errors = (0, validators_1.validateEmail)(req.body);
     if (errors.length != 0)
-        next(new ErrorClass_1.default(`${errors}`, 400));
+        next(new ErrorClass_1.CreateError(`${errors}`, 400));
     next();
 });
 exports.validateForgetPasswordPayload = validateForgetPasswordPayload;
 const validateResetPasswordPayload = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body.password)
-        return next(new ErrorClass_1.default('Password field cannot be empty', 400));
+        return next(new ErrorClass_1.CreateError('Password field cannot be empty', 400));
     let errors = [];
     errors = (0, validators_1.validateResetPwPayload)({
         resetToken: req.params.resetToken,
@@ -41,7 +38,7 @@ const validateResetPasswordPayload = (req, res, next) => __awaiter(void 0, void 
         password: req.body.password,
     });
     if (errors.length != 0)
-        next(new ErrorClass_1.default(`${errors}`, 400));
+        next(new ErrorClass_1.CreateError(`${errors}`, 400));
     next();
 });
 exports.validateResetPasswordPayload = validateResetPasswordPayload;

@@ -7,10 +7,10 @@ import {
   generatePasswordResetToken,
   generateResetTokenHash,
 } from '../utils/password';
-import CreateError from '../utils/ErrorClass';
+import { CreateError } from '../utils/ErrorClass';
 import { generateToken } from '../utils/token';
-import { Welcome, ForgetPassword } from '../utils/Email';
-// import { ObjectId } from 'mongoose';
+import eventHandler from '../utils/events';
+
 type LoginPayload = { username: string; password: string };
 type SignupPayload = {
   name: string;
@@ -22,9 +22,7 @@ type SignupPayload = {
 export const LoginController: RequestHandler = async (req, res, next) => {
   try {
     const data: LoginPayload = req.body;
-
     const validatedData = validateLoginUser(data);
-
     const user = await LoginUser(validatedData.username);
     if (!user) return next(new CreateError('User does not exists', 404));
     if (!(await compareFields(validatedData.password, user.password)))
@@ -60,12 +58,13 @@ export const SignUpController: RequestHandler = async (req, res, next) => {
     const url = `${req.protocol}://${req.get(
       'host',
     )}/api/v1/auth/${confirmCode}`;
-    await new Welcome(newUser, url).sendConfirmMail();
     res.status(201).json({
       status: 'success',
       newUser: newUser,
       message: 'Sign up  successful.Check your email to verify your account',
     });
+
+    if (newUser) new eventHandler(newUser, url).welcome();
   } catch (error) {
     next(error);
   }
@@ -104,7 +103,7 @@ export const forgetPassword: RequestHandler = async (req, res, next) => {
     const url = `${req.protocol}://${req.get(
       'host',
     )}/api/v1/auth/resetPassword/${user._id}/${TokensObject.resetToken}`;
-    await new ForgetPassword(user, url).sendResetTokenMail();
+    if (TokensObject) await new eventHandler(user, url).forgetPassword();
     user.passwordResetToken = TokensObject.hashedResetToken;
     user.passwordResetExpires = new Date(Date.now() + 20 * 60 * 1000);
     await user.save();
@@ -114,7 +113,6 @@ export const forgetPassword: RequestHandler = async (req, res, next) => {
       message: 'Password reset link has been sent to your email.Please check',
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -129,9 +127,6 @@ export const resetPassword: RequestHandler = async (req, res, next) => {
       passwordResetToken: generateResetTokenHash(resetToken),
       passwordResetExpires: { $gt: new Date(Date.now()) },
     });
-
-    // console.log(user);
-    // console.log(generateResetTokenHash(resetToken));
     if (!user)
       return next(new CreateError('User not found or Token has expired.', 400));
 

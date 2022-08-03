@@ -3,13 +3,20 @@ import { DocumentDefinition, HydratedDocument } from 'mongoose';
 import { generatePasswordHash } from '../utils/password';
 
 export const CreateUser = async (data: DocumentDefinition<UserInterface>) => {
-  data.password = await generatePasswordHash(data.password);
-  const newUser = await User.create(data);
-  return newUser;
+  // eslint-disable-next-line no-useless-catch
+  try {
+    data.password = await generatePasswordHash(data.password);
+    const newUser = await User.create(data);
+    return newUser;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const LoginUser = async (username: string) => {
-  const user = await User.findOne({ username }).select('+password');
+  const user = await User.findOne({
+    username: new RegExp(username, 'i'),
+  }).select('+password');
   return user;
 };
 
@@ -43,4 +50,8 @@ export const ChangePassword = async (
 
   await user.save();
   return user.toJSON();
+};
+
+export const findAllUsers = async (filter = {}) => {
+  return await User.find(filter);
 };

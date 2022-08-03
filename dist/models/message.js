@@ -6,17 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const messageSchema = new mongoose_1.default.Schema({
     from: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: true,
     },
     to: {
-        type: [mongoose_1.default.Schema.Types.ObjectId],
+        type: String,
         ref: 'User',
-    },
-    date: {
-        type: Date,
-        default: Date.now(),
     },
     title: {
         type: String,
@@ -26,11 +22,18 @@ const messageSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
-    status: {
-        type: String,
-        enum: ['draft', 'sent', 'retracted'],
+    retracted: {
+        type: Boolean,
+        default: false,
         required: true,
     },
+    status: {
+        type: String,
+        enum: ['draft', 'sent'],
+        required: true,
+    },
+}, {
+    timestamps: true,
 });
 const Message = mongoose_1.default.model('Message', messageSchema);
 exports.default = Message;
