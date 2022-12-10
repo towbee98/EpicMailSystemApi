@@ -1,8 +1,8 @@
 export default {
   patch: {
-    security: {
+    security: [{
       BearerAuth: [],
-    },
+    }],
     tags: ['Messaging'],
     summary:
       'This can only be accessed if a user is logged in .A JWT is sent along with the request.This route enables a user to retract a sent message sent by the logged in  user on the platform',

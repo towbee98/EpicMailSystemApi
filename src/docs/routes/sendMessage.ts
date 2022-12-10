@@ -1,8 +1,10 @@
 export default {
   post: {
-    security: {
-      BearerAuth: [],
-    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
     tags: ['Messaging'],
     summary:
       'This can only be accessed if a user is logged in .A JWT is sent along with the request.This route enables a user to send  message to an existing user on the platform',

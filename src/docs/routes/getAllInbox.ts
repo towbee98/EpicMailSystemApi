@@ -1,8 +1,8 @@
 export default {
   get: {
-    security: {
+    security:[{
       BearerAuth: [],
-    },
+    }],
     tags: ['Messaging'],
     summary:
       'This can only be accessed if a user is logged in .A JWT is sent along with the request.This route enables a user to fetch all inbox messages sent from any existing user on the platform',

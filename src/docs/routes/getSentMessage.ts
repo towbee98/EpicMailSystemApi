@@ -1,8 +1,10 @@
 export default {
   get: {
-    security: {
-      BearerAuth: [],
-    },
+    security: [
+      {
+        BearerAuth: [],
+      },
+    ],
     tags: ['Messaging'],
     summary:
       'This can only be accessed if a user is logged in .A JWT is sent along with the request.This route enables a user to fetch a message sent by the logged in  user on the platform',
