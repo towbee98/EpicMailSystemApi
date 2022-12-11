@@ -5,7 +5,7 @@ export default {
       description: 'local server',
     },
     {
-      url: 'https://epic-mail-system.herokuapp.com',
+      url: 'https://epicmailsystemapi-production.up.railway.app/',
       description: 'Production server',
     },
   ],
